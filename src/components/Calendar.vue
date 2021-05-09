@@ -13,7 +13,7 @@
           <p class="title is-1">
             {{ title }}
           </p>
-          <a @click="setToday"  class="subtitle has-text-primary">Today</a>
+          <a @click="setToday" class="subtitle has-text-primary">Today</a>
         </div>
       </div>
       <div class="level-right">
@@ -62,6 +62,19 @@
             <calendar-date :date.sync="date" @select="onSelectDate" />
           </div>
         </div>
+        <b-modal
+          v-model="isModalActive"
+          has-modal-card
+          trap-focus
+          :destroy-on-hide="true"
+          aria-role="dialog"
+          aria-label="Example Modal"
+          aria-modal
+        >
+          <template #default="props">
+            <calendar-reminder :date="model" @save="onSaveReminder" @close="onCloseReminder"/>
+          </template>
+        </b-modal>
       </div>
     </div>
   </section>
@@ -72,9 +85,16 @@ import Helpers from "@/core/helpers";
 import CalendarYear from "@/models/CalendarYear";
 import CalendarMonth from "@/models/CalendarMonth";
 import CalendarDate from "@/models/CalendarDate";
+import CalendarReminder from "@/models/CalendarReminder";
 import CalendarDateComponent from "./CalendarDate.vue";
+import CalendarReminderComponent from "./CalendarReminder.vue";
+import { mapState } from "vuex";
 @Component({
-  components: { "calendar-date": CalendarDateComponent },
+  components: {
+    "calendar-date": CalendarDateComponent,
+    "calendar-reminder": CalendarReminderComponent,
+  },
+  computed:mapState(['reminders'])
 })
 export default class Calendar extends Vue {
   @Prop() title!: string;
@@ -82,11 +102,12 @@ export default class Calendar extends Vue {
   optionsYears = Helpers.getOptionsYears();
   optionsMonths = Helpers.getOptionsMonths();
   weekDays = Helpers.days;
-
+  isModalActive = false;
   model = new CalendarDate(new Date());
-setToday(){
-  this.model = new CalendarDate(new Date());
-}
+  reminders!:CalendarReminder[]
+  setToday() {
+    this.model = new CalendarDate(new Date());
+  }
   get calendarYear() {
     return new CalendarYear(this.model.year);
   }
@@ -129,6 +150,13 @@ setToday(){
 
   onSelectDate(item: CalendarDate) {
     this.model = item;
+    this.isModalActive = true;
+  }
+  onCloseReminder(){
+    this.isModalActive = false;
+    this.model = new CalendarDate(new Date());
+  }
+  onSaveReminder(value: CalendarReminder) {
   }
 }
 </script>

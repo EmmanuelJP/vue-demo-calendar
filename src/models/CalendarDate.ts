@@ -3,6 +3,7 @@ export default class CalendarDate {
   public month: number;
   public year: number;
   public isOutOfMonth = false;
+  public isModalActive = false;
   constructor(public date: Date) {
     this.day = date.getDate();
     this.month = date.getMonth();

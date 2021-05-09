@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <section class="container"> 
+    <section class="container is-fullhd"> 
     <router-view/>
     </section>
   </div>
