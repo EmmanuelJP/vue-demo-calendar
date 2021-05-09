@@ -8,12 +8,14 @@
           </b-field>
         </div>
       </div>
-      <p class="level-item has-text-centered">
-        <span class="title is-1">
-          {{ title }}
-        </span>
-      </p>
-
+      <div class="level-item">
+        <div class="has-text-centered">
+          <p class="title is-1">
+            {{ title }}
+          </p>
+          <a @click="setToday"  class="subtitle has-text-primary">Today</a>
+        </div>
+      </div>
       <div class="level-right">
         <p class="level-item">
           <b-field label="Month">
@@ -57,7 +59,7 @@
             v-for="(date, key) in calendarDates"
             class="column is-1"
           >
-            <calendar-date  :date="date" />
+            <calendar-date :date.sync="date" @select="onSelectDate" />
           </div>
         </div>
       </div>
@@ -82,7 +84,9 @@ export default class Calendar extends Vue {
   weekDays = Helpers.days;
 
   model = new CalendarDate(new Date());
-
+setToday(){
+  this.model = new CalendarDate(new Date());
+}
   get calendarYear() {
     return new CalendarYear(this.model.year);
   }
@@ -91,7 +95,7 @@ export default class Calendar extends Vue {
     return new CalendarMonth(this.model.month, this.model.year);
   }
 
-  getPreviousDates() {
+  get previousDates() {
     let dates = [];
     let firstDay = this.calendarMonth.days[0];
     for (let index = firstDay.weekDay; index > 0; index--) {
@@ -103,7 +107,7 @@ export default class Calendar extends Vue {
     }
     return dates;
   }
-  getNextDates() {
+  get nextDates() {
     let dates = [];
     let lastDay = this.calendarMonth.days[this.calendarMonth.days.length - 1];
     let startDays = 7 - (lastDay.weekDay + 1);
@@ -117,17 +121,14 @@ export default class Calendar extends Vue {
     return dates;
   }
   get calendarDates() {
-    let previousDates = this.getPreviousDates();
-
     let currentDates = this.calendarMonth.days.map(
       (x) => new CalendarDate(x.date)
     );
-    let lastDates = this.getNextDates();
-    return previousDates.concat(currentDates).concat(lastDates);
+    return this.previousDates.concat(currentDates).concat(this.nextDates);
   }
 
-  created() {
-    console.log(this.calendarYear);
+  onSelectDate(item: CalendarDate) {
+    this.model = item;
   }
 }
 </script>
