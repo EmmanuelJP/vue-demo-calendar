@@ -59,7 +59,7 @@
             v-for="(date, key) in calendarDates"
             class="column is-1"
           >
-            <calendar-date :date.sync="date" @select="onSelectDate" />
+            <calendar-date :date.sync="date" @select="onSelectDate" @edit="onSelectReminderToEdit" />
           </div>
         </div>
         <b-modal
@@ -72,7 +72,8 @@
           aria-modal
         >
           <template #default="props">
-            <calendar-reminder :date="model" @save="onSaveReminder" @close="onCloseReminder"/>
+            <calendar-reminder-edit v-if="isEditingReminder" :value="editingReminder" @close="onCloseReminderModal"/>
+            <calendar-reminder v-else :date="model" @close="onCloseReminderModal"/>
           </template>
         </b-modal>
       </div>
@@ -87,12 +88,14 @@ import CalendarMonth from "@/models/CalendarMonth";
 import CalendarDate from "@/models/CalendarDate";
 import CalendarReminder from "@/models/CalendarReminder";
 import CalendarDateComponent from "./CalendarDate.vue";
-import CalendarReminderComponent from "./CalendarReminder.vue";
+import CalendarReminderAdd from "./CalendarReminderAdd.vue";
+import CalendarReminderEdit from "./CalendarReminderEdit.vue";
 import { mapState } from "vuex";
 @Component({
   components: {
     "calendar-date": CalendarDateComponent,
-    "calendar-reminder": CalendarReminderComponent,
+    "calendar-reminder-add": CalendarReminderAdd,
+    "calendar-reminder-edit": CalendarReminderEdit,
   },
   computed:mapState(['reminders'])
 })
@@ -152,11 +155,18 @@ export default class Calendar extends Vue {
     this.model = item;
     this.isModalActive = true;
   }
-  onCloseReminder(){
+  onCloseReminderModal(){
     this.isModalActive = false;
     this.model = new CalendarDate(new Date());
+    this.editingReminder = null;
   }
-  onSaveReminder(value: CalendarReminder) {
+  get isEditingReminder(){
+    return !!this.editingReminder;
+  }
+  editingReminder:CalendarReminder | null = null;
+  onSelectReminderToEdit(value: CalendarReminder) {
+    this.editingReminder = value;
+    this.isModalActive = true;
   }
 }
 </script>

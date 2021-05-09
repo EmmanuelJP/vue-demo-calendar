@@ -7,6 +7,16 @@
 </template>
 
 <style lang="scss">
+.has-cursor-pointer {
+  cursor: pointer;
+}
+.has-text-breaked {
+  word-break: break-all;
+}
+.is-clickable {
+  cursor: pointer;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

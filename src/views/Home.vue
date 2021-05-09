@@ -1,6 +1,6 @@
 <template>
   <div class="section">
-    <Calendar title="Vue Calendar"/>
+    <Calendar title="Vue calendar"/>
   </div>
 </template>
 

@@ -80,7 +80,7 @@
       </section>
       <footer class="modal-card-foot">
         <b-button label="Close" @click="$emit('close')" />
-        <b-button label="Save" type="is-primary" @click="save" />
+        <b-button label="Save" type="is-primary" @click="valid" />
       </footer>
     </div>
   </section>
@@ -92,13 +92,14 @@ import CalendarReminder from "@/models/CalendarReminder";
 import { NEW_REMINDER_ASYNC } from "@/core/actions";
 
 @Component
-export default class CalendarReminderComponent extends Vue {
+export default class CalendarReminderAdd extends Vue {
   @Prop() date!: CalendarDate;
   model = new CalendarReminder(this.date.date);
   created() {
     this.model.time = this.model.date;
   }
-  async save() {
+ 
+  async valid() {
     const isModelValid = await this.$validator.validateAll();
     if (!isModelValid) {
       const errors = this.$validator.errors.items;
@@ -111,17 +112,21 @@ export default class CalendarReminderComponent extends Vue {
           position: "is-top-right",
         })
       );
-    } else {
-      this.model.setId();
-      await this.$store.dispatch(NEW_REMINDER_ASYNC, this.model);
-      this.$buefy.toast.open({
-        message: "Reminder saved",
-        type: "is-success",
-      });
-      this.$validator.errors.clear();
-      this.$emit("save");
-      this.$emit("close");
+      return;
     }
+    this.save();
+  }
+
+  async save() {
+    this.model.setId();
+    await this.$store.dispatch(NEW_REMINDER_ASYNC, this.model);
+    this.$buefy.toast.open({
+      message: "Reminder saved",
+      type: "is-success",
+    });
+    this.$validator.errors.clear();
+    this.$emit("saved");
+    this.$emit("close");
   }
 }
 </script>

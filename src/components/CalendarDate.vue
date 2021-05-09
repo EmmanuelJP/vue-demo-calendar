@@ -9,35 +9,13 @@
         {{ date.day }}
       </b-button>
       <div class="mt-1">
-        <div
-          v-for="(reminder, key) in myReminders"
-          class="tags mb-0 has-addons"
-        >
-          <b-tooltip
-            v-if="reminder.text.length >= 12"
-            multilined
-            :delay="1000"
-          >
-            <template v-slot:content>
-              <p class="has-text-breaked">
-              {{ reminder.text }}
-              </p>
-            </template>
-            <span class="tag is-size-7" :style="{ color: reminder.color }">
-              {{ reminder.text | dots(12) }}
-            </span>
-          </b-tooltip>
-          <span v-else class="tag is-size-7" :style="{ color: reminder.color }">
-            {{ reminder.text }}
-          </span>
-          <a
-            role="button"
-            aria-label="Close tag"
-            tabindex="0"
-            class="tag is-delete"
-            @click="removeReminder(reminder)"
-          ></a>
+        <div v-for="(reminder, key) in myReminders">
+          <calendar-reminder-item
+            :reminder="reminder"
+            @edit="(value) => $emit('edit', value)"
+          />
         </div>
+
         <a
           v-show="myReminders.length > 1"
           class="is-size-7 has-text-danger"
@@ -51,14 +29,14 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import CalendarDate from "@/models/CalendarDate";
-import CalendarReminderComponent from "./CalendarReminder.vue";
 import { mapState } from "vuex";
 import CalendarReminder from "@/models/CalendarReminder";
-import { DELETE_REMINDERS_ASYNC, DELETE_REMINDER_ASYNC } from "@/core/actions";
+import { DELETE_REMINDERS_ASYNC } from "@/core/actions";
 import moment from "moment";
+import CalendarReminderItem from "./CalendarReminderItem.vue";
 
 @Component({
-  components: { "calendar-reminder": CalendarReminderComponent },
+  components: { "calendar-reminder-item": CalendarReminderItem },
   computed: mapState(["reminders"]),
 })
 export default class CalendarDateComponent extends Vue {
@@ -80,10 +58,10 @@ export default class CalendarDateComponent extends Vue {
     return ordered;
   }
 
-  async removeReminder(reminder: CalendarReminder) {
-    await this.$store.dispatch(DELETE_REMINDER_ASYNC, reminder);
+  async removeAllReminders() {
+    await this.$store.dispatch(DELETE_REMINDERS_ASYNC, this.myReminders);
     this.$buefy.toast.open({
-      message: "Reminder removed",
+      message: "Reminders removed",
       type: "is-success",
     });
   }
@@ -97,23 +75,10 @@ export default class CalendarDateComponent extends Vue {
       onConfirm: () => this.removeAllReminders(),
     });
   }
-  async removeAllReminders() {
-    await this.$store.dispatch(DELETE_REMINDERS_ASYNC, this.myReminders);
-    this.$buefy.toast.open({
-      message: "Reminders removed",
-      type: "is-success",
-    });
-  }
 }
 </script>
 
 <style scoped>
-.has-text-breaked{
-word-break: break-all;
-}
-.is-clickable {
-  cursor: pointer;
-}
 
 [data-badge]::after {
   z-index: 30;
