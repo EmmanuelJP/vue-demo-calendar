@@ -70,10 +70,11 @@
           aria-role="dialog"
           aria-label="Example Modal"
           aria-modal
+          @close="onCloseReminderModal"
         >
           <template #default="props">
-            <calendar-reminder-edit v-if="isEditingReminder" :value="editingReminder" @close="onCloseReminderModal"/>
-            <calendar-reminder v-else :date="model" @close="onCloseReminderModal"/>
+            <calendar-reminder v-if="isEditingReminder" :value="editingReminder" @close="onCloseReminderModal"/>
+            <calendar-reminder-add v-else :date="model" @close="onCloseReminderModal"/>
           </template>
         </b-modal>
       </div>
@@ -89,15 +90,13 @@ import CalendarDate from "@/models/CalendarDate";
 import CalendarReminder from "@/models/CalendarReminder";
 import CalendarDateComponent from "./CalendarDate.vue";
 import CalendarReminderAdd from "./CalendarReminderAdd.vue";
-import CalendarReminderEdit from "./CalendarReminderEdit.vue";
-import { mapState } from "vuex";
+import CalendarReminderInfo from "./CalendarReminderInfo.vue";
 @Component({
   components: {
     "calendar-date": CalendarDateComponent,
     "calendar-reminder-add": CalendarReminderAdd,
-    "calendar-reminder-edit": CalendarReminderEdit,
-  },
-  computed:mapState(['reminders'])
+    "calendar-reminder": CalendarReminderInfo,
+  }
 })
 export default class Calendar extends Vue {
   @Prop() title!: string;
@@ -107,7 +106,6 @@ export default class Calendar extends Vue {
   weekDays = Helpers.days;
   isModalActive = false;
   model = new CalendarDate(new Date());
-  reminders!:CalendarReminder[]
   setToday() {
     this.model = new CalendarDate(new Date());
   }
@@ -156,9 +154,9 @@ export default class Calendar extends Vue {
     this.isModalActive = true;
   }
   onCloseReminderModal(){
-    this.isModalActive = false;
     this.model = new CalendarDate(new Date());
     this.editingReminder = null;
+    this.isModalActive = false;
   }
   get isEditingReminder(){
     return !!this.editingReminder;

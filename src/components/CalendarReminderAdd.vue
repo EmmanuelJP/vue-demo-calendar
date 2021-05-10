@@ -19,6 +19,7 @@
               :message="errors.first('text')"
             >
               <b-input
+              id="input-text"
                 v-model="model.text"
                 name="text"
                 data-vv-as="text"
@@ -34,6 +35,7 @@
               :message="errors.first('time')"
             >
               <b-timepicker
+               id="input-time"
                 icon="clock"
                 name="time"
                 v-model="model.time"
@@ -52,6 +54,7 @@
               :message="errors.first('city')"
             >
               <b-input
+              id="input-city"
                 v-model="model.city"
                 name="city"
                 data-vv-as="city"
@@ -67,6 +70,7 @@
               :message="errors.first('color')"
             >
               <b-input
+              id="input-color"
                 type="color"
                 v-model="model.color"
                 name="color"
@@ -80,7 +84,7 @@
       </section>
       <footer class="modal-card-foot">
         <b-button label="Close" @click="$emit('close')" />
-        <b-button label="Save" type="is-primary" @click="valid" />
+        <b-button class="button-save" label="Save" type="is-primary" @click="valid" />
       </footer>
     </div>
   </section>
@@ -98,7 +102,7 @@ export default class CalendarReminderAdd extends Vue {
   created() {
     this.model.time = this.model.date;
   }
- 
+
   async valid() {
     const isModelValid = await this.$validator.validateAll();
     if (!isModelValid) {
@@ -114,19 +118,25 @@ export default class CalendarReminderAdd extends Vue {
       );
       return;
     }
+
+
     this.save();
   }
 
   async save() {
-    this.model.setId();
-    await this.$store.dispatch(NEW_REMINDER_ASYNC, this.model);
-    this.$buefy.toast.open({
-      message: "Reminder saved",
-      type: "is-success",
-    });
-    this.$validator.errors.clear();
-    this.$emit("saved");
-    this.$emit("close");
+    try {
+      this.model.setId();
+      await this.$store.dispatch(NEW_REMINDER_ASYNC, this.model);
+      this.$buefy.toast.open({
+        message: "Reminder saved",
+        type: "is-success",
+      });
+      this.$validator.errors.clear();
+      this.$emit("saved", true);
+      this.$emit("close");
+    } catch (error) {
+      this.$emit("error", error);
+    }
   }
 }
 </script>

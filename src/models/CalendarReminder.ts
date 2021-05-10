@@ -12,8 +12,6 @@ export default class CalendarReminder {
   public id?: string;
 
   public setId() {
-    this.id = `${this.date.toString()}-${this.text}-${this.time}-${this.city}-${
-      this.color
-    }`;
+    this.id = Date.now().toString();
   }
 }

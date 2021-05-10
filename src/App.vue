@@ -37,4 +37,41 @@
     }
   }
 }
+
+.weather-image{
+  height: 150px;
+    width: 170px;
+}
+.margin-o-auto {
+  margin: 0 auto;
+}
+.temperature{
+      display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -ms-flex-pack: center;
+    justify-content: center;
+}
+.temperature-value {
+  font-size: 5em;
+}
+
+.temperature-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.temperature-scale {
+  font-size: 1em;
+  font-weight: bold;
+}
+.temperature-high img {
+  vertical-align: middle;
+}
+
+.mperature-low img {
+  vertical-align: middle;
+}
 </style>
