@@ -56,7 +56,7 @@ export default class CalendarReminderWeatherForecast extends Vue {
       this.weather = (await responde.json()) as IWeather;
       this.getForecastInfo(this.weather.coord);
     } catch (error) {
-      console.log(error);
+      this.weather = null;
     } finally {
       this.loading = false;
     }

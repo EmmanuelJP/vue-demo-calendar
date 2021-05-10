@@ -2,7 +2,7 @@
   <section class="columns">
     <div class="column is-12">
       <div class="notification is-primary">
-        <div v-if="!loading && model">
+        <div v-if="!loading && isValid">
           <nav class="level mb-0">
             <div class="level-item has-text-centered">
               <figure class="image is-32x32">
@@ -67,7 +67,7 @@
             </p>
           </div>
         </div>
-        <div v-else-if="!loading && !model">
+        <div v-else-if="!loading && !isValid">
           <p class="title">Weather data could not be loaded</p>
         </div>
         <div v-else-if="loading">
@@ -91,6 +91,9 @@ export default class CalendarReminderWeather extends Vue {
     return this.scale.charAt(0);
   }
 
+  get isValid(){
+    return !this.loading && this.model && this.model.base;
+  }
   get value() {
     return Math.round(this.model.main.temp);
   }
