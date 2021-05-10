@@ -1,13 +1,6 @@
 <template>
   <section>
     <nav class="level">
-      <div class="level-left">
-        <div class="level-item">
-          <b-field label="Selected date">
-            <p class="subtitle is-5">{{ model.date | date }}</p>
-          </b-field>
-        </div>
-      </div>
       <div class="level-item">
         <div class="has-text-centered">
           <p class="title is-1">
